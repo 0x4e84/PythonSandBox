@@ -16,3 +16,9 @@ class Island(object):
     def to_string(self):
         return "Island {} at [{}, {}], requires {} connections"\
             .format(self.index, self.y, self.x, self.required_bridges)
+
+    def required_bridges(self):
+        return self.required_bridges
+
+    def __str__(self):
+        return str(self.required_bridges)
