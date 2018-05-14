@@ -60,3 +60,6 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+Projects/cards/.idea/workspace.xml
+Projects/cards/venv/
+Projects/GridGames/.idea/workspace.xml
