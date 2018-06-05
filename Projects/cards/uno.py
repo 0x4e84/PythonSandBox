@@ -1,6 +1,7 @@
-from tkinter import *
+#from PIL import Image, ImageTk
+#from tkinter import *
 
-from random import choice, shuffle
+from random import choice, shuffle, randrange
 
 
 # Affichage de la liste des cartes dans une pile
@@ -63,20 +64,33 @@ def piocher_une_carte():
     return cartes_pioche.pop(0)
 
 
+def piocher_N_cartes_pour_joueur_ayant_la_main(N):
+    print(joueur_ayant_la_main, "pioche", N, "carte(s)!")
+    for i in range (N):
+        carte = piocher_une_carte()
+        if joueur_ayant_la_main == "Joueur1":
+            cartes_joueur1.append(carte)
+        else:
+            cartes_joueur2.append(carte)
+
+
 # On retire la première carte de la pioche
-def piocher_une_carte_et_la_jouer_sur_le_tapis():
-    carte = piocher_une_carte()
-    cartes_tapis.append(carte)
+def poser_une_carte_sur_le_tapis(carte):
+    # On place la carte sur le dessus du tapis
+    cartes_tapis.insert(0, carte)
     # Pour définir la couleur actuelle, on lit le paramètre "couleur" de cette carte
     # Ici il faut utiliser le mot-clef "global" car on change la valeur de ce paramètre défini ailleurs
+    definir_couleur_actuelle(carte["couleur"])
+
+
+def definir_couleur_actuelle(couleur):
     global couleur_actuelle
-    couleur_actuelle = carte["couleur"]
-    print("Première carte: {} ({})".format(carte["symbole"], carte["couleur"]))
-    return carte
+    couleur_actuelle = couleur
 
 
 # Distribution de 7 cartes à chaque joueur
 def distribuer_les_cartes():
+    global cartes_joueur1, cartes_joueur2
     for i in range(7):
         cartes_joueur1.append(piocher_une_carte())
         cartes_joueur2.append(piocher_une_carte())
@@ -87,6 +101,68 @@ def distribuer_les_cartes():
 # On tire au sort quel joueur commence
 def tirer_au_sort_un_joueur():
     return choice(["Joueur1", "Joueur2"])
+
+
+def changer_de_joueur():
+    global joueur_ayant_la_main
+    if joueur_ayant_la_main == "Joueur1":
+        joueur_ayant_la_main = "Joueur2"
+    else:
+        joueur_ayant_la_main = "Joueur1"
+    print(joueur_ayant_la_main, "prend la main")
+
+
+def appliquer_cartes_speciales():
+    # On regarde quelle est la carte sur le dessus du tapis
+    carte_actuelle = cartes_tapis[0]
+    if carte_actuelle["symbole"] == "+2":
+        piocher_N_cartes_pour_joueur_ayant_la_main(2)
+    elif carte_actuelle["symbole"] == "+4":
+        piocher_N_cartes_pour_joueur_ayant_la_main(4)
+    elif carte_actuelle["symbole"] == "changement de sens" or carte_actuelle["symbole"] == "passe":
+        changer_de_joueur()
+
+
+def carte_est_valide(carte):
+    premiere_carte = cartes_tapis[0]
+    if carte["couleur"] == "speciale":
+        return True
+    elif carte["couleur"] == premiere_carte["couleur"]:
+        return True
+    elif carte["symbole"] == premiere_carte["symbole"]:
+        return True
+    else:
+        return False
+
+
+def faire_jouer_joueur2():
+    global couleur_actuelle
+    cartes_valides = []
+    for carte in cartes_joueur2:
+        if carte_est_valide(carte):
+            cartes_valides.append(carte)
+    if len(cartes_valides) == 0:
+        print("Joueur2 n'a aucune carte valide et doit piocher")
+        piocher_N_cartes_pour_joueur_ayant_la_main(1)
+        changer_de_joueur()
+        return
+    else:
+        # On choisit aléatoirement une carte parmis les cartes valides:
+        index = randrange(len(cartes_valides))
+        carte_choisie = cartes_valides.pop(index)
+        print("{} joue la carte {} (carte {}) sur le tapis".format(joueur_ayant_la_main, carte_choisie["symbole"], carte_choisie["couleur"]))
+        poser_une_carte_sur_le_tapis(carte_choisie)
+        if len(cartes_joueur2) == 0:
+            print("Joueur2 a gagné!!")
+            return
+        else:
+            appliquer_cartes_speciales()
+            if carte_choisie["symbole"] == "changement de couleur" or carte_choisie["symbole"] == "+4":
+                nouvelle_couleur = choice(['bleu', 'rouge', 'jaune', 'vert'])
+                print("Couleur actuelle:", nouvelle_couleur)
+                definir_couleur_actuelle (nouvelle_couleur)
+            changer_de_joueur()
+            return 
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -106,9 +182,15 @@ melanger_la_pioche()
 
 distribuer_les_cartes()
 
-# On lit la première carte de la pioche. C'est elle qui détermine ce qui peut être posé par le premier joueur
-piocher_une_carte_et_la_jouer_sur_le_tapis()
-
 joueur_ayant_la_main = tirer_au_sort_un_joueur()
-print("{} commence la partie".format(joueur_ayant_la_main))
+print("{} commence la partie\n".format(joueur_ayant_la_main))
 
+# On lit la première carte de la pioche. C'est elle qui détermine ce qui peut être posé par le premier joueur
+carte = piocher_une_carte()
+print("Carte de départ: {} (carte {})\n".format(carte["symbole"], carte["couleur"]))
+poser_une_carte_sur_le_tapis(carte)
+
+appliquer_cartes_speciales()
+
+if joueur_ayant_la_main == "Joueur2":
+    faire_jouer_joueur2()
