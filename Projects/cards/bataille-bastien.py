@@ -94,7 +94,7 @@ def commencer_le_jeu():
 
 def charger_image(carte):
     couleur, points, rang = carte
-    nom_image = "Images/" + couleur + "_" + rang + ".png"
+    nom_image = "Images/bataille/" + couleur + "_" + rang + ".png"
     return PhotoImage(file=nom_image)
 
 
@@ -127,7 +127,7 @@ def afficher_cartes():
         return
 
     # On affiche les cartes du joueur 1
-    image_dos = PhotoImage(file="Images/dos.png")
+    image_dos = PhotoImage(file="Images/bataille/dos.png")
     for i in range(len(player1), 0, -1):
         canvas.create_image(22+i, 207+2*i, image=image_dos, anchor="w")
     for i in range(len(tapis_joueur_1)):
