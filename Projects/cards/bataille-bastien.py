@@ -172,6 +172,7 @@ def afficher_cartes():
 
     tk.mainloop()
 
+
 def continuer_jeu():
     afficher_cartes()
 

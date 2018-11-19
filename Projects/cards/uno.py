@@ -1,3 +1,4 @@
+# coding=utf-8
 #from PIL import Image, ImageTk
 #from tkinter import *
 
@@ -192,7 +193,7 @@ def faire_jouer_joueur1():
 def faire_jouer_joueur2():
     global couleur_actuelle, partie_en_cours
     cartes_valides = []
-    # On doit parcourir la liste de la fin vers le début, pour ne pas décaler des éléments qu'on n'a pas encore accédés
+    # On doit parcourir la liste de la fin vers le début, pour ne pas décaler des éléments auxquels on n'a pas encore accédé
     for index in reversed(range(len(cartes_joueur2))):
         carte = cartes_joueur2[index]
         if carte_est_valide(carte):
