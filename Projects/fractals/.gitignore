@@ -1,0 +1,20 @@
+#Ipython Notebook
+.ipynb_checkpoints
+
+# Intellij
+*.iml
+.idea/compiler.xml
+.idea/gradle.xml
+.idea/kotlinc.xml
+.idea/markdown-navigator.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/tasks.xml
+.idea/vcs.xml
+.idea/workspace.xml
+.idea/caches/
+.idea/codeStyles/
+.idea/copyright/
+.idea/dictionaries/
+.idea/libraries/
+.idea/markdown-navigator/
